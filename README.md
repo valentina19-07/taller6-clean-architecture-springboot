@@ -1,95 +1,41 @@
-# Clean Architecture en SpringBoot
+# Backend Spring Boot – Clean Architecture
 
-```
-src/main/java/uceva/cleanarchitecture
-│
-├── domain
-│   ├── entity/
-│   │   ├── User.java
-│   │   └── Product.java
-│   │
-│   └── repository/
-│       ├── UserRepository.java
-│       └── ProductRepository.java
-│
-├── application
-│   └── usecase/
-│       ├── GetAllUsersUseCase.java
-│       └── GetAllProductsUseCase.java
-│
-├── infrastructure
-│   ├── controller/
-│   │   ├── UserController.java
-│   │   └── ProductController.java
-│   │
-│   ├── repository/
-│   │   ├── UserRepositoryImpl.java
-│   │   └── ProductRepositoryImpl.java
-│   │
-│   └── datasource/
-│       ├── UserDatasource.java
-│       └── ProductDatasource.java
-│
-├── config
-│   └── AppConfig.java
-│
-└── UcevaSprinBootTallerCleanArchitectureApplication.java
+API REST en Spring Boot (Java 25, Gradle) con 3 módulos: **Users, Products y Books**.
+
+## Arquitectura
+
+| Capa | Paquete | Responsabilidad |
+|---|---|---|
+| Domain | `domain.entity`, `domain.repository` | Entidades y contratos (clases abstractas). No depende de nada. |
+| Application | `application.usecase` | Casos de uso. Dependen solo de los contratos. |
+| Infrastructure | `infrastructure.controller`, `.repository`, `.datasource` | Controllers REST, implementaciones de repositorio y fuentes de datos (JavaFaker). |
+| Config | `config` | `AppConfig` (inyección de dependencias) y `CorsConfig`. |
+
+Flujo: `Controller -> Caso de uso -> Repositorio (contrato) -> Repositorio Impl -> Datasource`.
+
+**Inyección de dependencias:** cada implementación se registra como `@Bean` en `AppConfig`;
+Spring la entrega al controller por constructor.
+
+## Ejecución
+
+Requiere JDK 25.
+
+```bash
+./gradlew bootRun
 ```
 
+Servidor: `http://localhost:8080` (context-path `/api`).
 
-## Paso 1 - Crear Entidades
+## Endpoints
 
-```
-src/main/java/uceva/cleanarchitecture/domain/entity
-├── User.java
-└── Product.java
-```
+| Método | Ruta | Descripción |
+|---|---|---|
+| GET | `/api/users/{countUsers}` | Lista de usuarios |
+| GET | `/api/products/{countProducts}` | Lista de productos |
+| GET | `/api/books/{countBooks}` | Lista de libros |
 
-## Paso 2 - Crear Repositorios
+Swagger/OpenAPI: `http://localhost:8080/api/swagger-ui/index.html`
 
-```
-src/main/java/uceva/cleanarchitecture/domain/repositories/
-├── UserRepository.java
-└── ProductRepository.java
-```
+## Integrantes
 
-## Paso 3 - Crear Casos de Uso
-
-```
-src/main/java/uceva/cleanarchitecture/application/usecase/
-├── GetAllUsersUseCase.java
-└── GetAllProductsUseCase.java
-```
-
-## Paso 4 - Crear Controllers
-
-
-```
-src/main/java/uceva/cleanarchitecture/infrastructure/controllers/
-├── UserController.java
-└── ProductController.java
-```
-
-## Paso 5 - Crear Repositorios Implementadores
-
-```
-src/main/java/uceva/cleanarchitecture/infrastructure/repository/
-├── UserRepositoryImpl.java
-└── ProductRepositoryImpl.java
-```
-
-## Paso 6 - Agregar la Inyección de Dependencias
-
-```
-src/main/java/uceva/cleanarchitecture/config/
-└── AppConfig.java
-```
-
-# Funcionamiento del Backend
-
-## Urls Consumo
-```
-http://localhost:3000/api/swagger-ui/index.html
-http://localhost:8080/api/users/{countUsers}
-http://localhost:8080/api/products/{countProducts}
-```
+Juan · Valen
